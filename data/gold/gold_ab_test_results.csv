@@ -1,0 +1,4 @@
+test_name,control_n,treatment_n,control_conv_rate,treatment_conv_rate,lift_pp,lift_relative_pct,sample_size_flag
+pricing_test,2509,2475,7.05,24.24,17.19,243.8,sufficient
+trial_length,2527,2475,8.86,25.9,17.04,192.3,sufficient
+cta_button,2552,2462,7.68,23.48,15.8,205.7,sufficient

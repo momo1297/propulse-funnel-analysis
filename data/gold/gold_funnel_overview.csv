@@ -1,0 +1,16 @@
+channel,partner_id,total_visitors,total_signups,total_trials,total_paid,pct_visit_to_signup,pct_signup_to_trial,pct_trial_to_paid,pct_overall_conversion
+referral,NutriDigital,1714,999,635,373,58.28,63.56,58.74,21.76
+referral,HealthMedia,1683,1027,643,361,61.02,62.61,56.14,21.45
+referral,WellnessPress,1698,1013,650,349,59.66,64.17,53.69,20.55
+email_campaign,HealthMedia,3214,1646,938,411,51.21,56.99,43.82,12.79
+email_campaign,NutriDigital,3262,1700,952,401,52.12,56.0,42.12,12.29
+email_campaign,WellnessPress,3379,1760,929,394,52.09,52.78,42.41,11.66
+direct,WellnessPress,2462,1035,522,213,42.04,50.43,40.8,8.65
+direct,HealthMedia,2472,1107,560,213,44.78,50.59,38.04,8.62
+direct,NutriDigital,2495,1069,541,214,42.85,50.61,39.56,8.58
+organic_search,WellnessPress,4965,1771,825,250,35.67,46.58,30.3,5.04
+organic_search,HealthMedia,5032,1825,827,231,36.27,45.32,27.93,4.59
+organic_search,NutriDigital,4962,1766,813,224,35.59,46.04,27.55,4.51
+paid_social,NutriDigital,4311,1281,493,120,29.71,38.49,24.34,2.78
+paid_social,WellnessPress,4224,1202,472,116,28.46,39.27,24.58,2.75
+paid_social,HealthMedia,4127,1132,434,100,27.43,38.34,23.04,2.42

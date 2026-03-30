@@ -1,0 +1,6 @@
+channel,total_visitors,avg_days_visit_to_signup,med_days_visit_to_signup,avg_days_signup_to_trial,med_days_signup_to_trial,avg_days_trial_to_paid,med_days_trial_to_paid,avg_days_full_journey
+paid_social,12662,1.5,2.0,4.0,4.0,18.3,18.0,23.8
+referral,5095,1.5,2.0,4.1,4.0,18.2,18.0,23.8
+organic_search,14959,1.5,2.0,4.0,4.0,18.5,18.0,24.0
+email_campaign,9855,1.5,2.0,4.0,4.0,18.9,19.0,24.3
+direct,7429,1.5,2.0,4.0,4.0,18.9,19.0,24.5
