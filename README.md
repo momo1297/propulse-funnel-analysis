@@ -52,6 +52,8 @@ Every CSV is loaded as-is with a `_ingested_at` timestamp. Nothing is modified. 
 |---|---|
 | `silver_funnel` | Typed dates via `TRY_CAST` · `time_to_signup_days`, `time_to_trial_days`, `time_to_paid_days` · `funnel_stage` (deepest step reached) · `dropped_at` (exit step, NULL if converted) |
 
+> **Note on storage format:** Unlike Project 1 where Silver is exported to Parquet files, Silver here lives as a DuckDB table inside `funnel.duckdb`. The reason: this dataset has a single fact table (no multi-table joins across Silver entities), so materialising to Parquet files would add I/O overhead with no benefit. In production, both approaches converge — DuckDB can export to Parquet in one line, and the Gold CSVs are already Athena-compatible.
+
 ### Gold — Analytical tables (one business question per table)
 
 | Table | Business question | Key metric |
@@ -72,7 +74,9 @@ Referral drives **21.25%** of visitors all the way to payment. Paid social deliv
 **29,667 visitors** — 59.3% of all traffic — drop before ever signing up. The signup → trial and trial → paid steps lose far fewer people in absolute terms. This means the highest-leverage UX investment is the **landing page and signup form**, not the trial experience or pricing page. Reducing friction at visit→signup by even 5 percentage points would add ~2,500 signups per 50K visitors without touching the rest of the funnel.
 
 ### 3. pricing_test delivers a +17 pp lift — the clearest experiment winner
-The pricing test moves conversion from **7.05%** (control) to **24.24%** (treatment), a **+17.19 percentage point** absolute lift. This outperforms cta_button and trial_length by a wide margin. Absolute lift (not relative %) is the right metric here: it tells stakeholders "17 more paying users per 100 treatment visitors", which maps directly to revenue. With sufficient sample sizes on both arms, this result warrants a full rollout.
+The pricing test moves conversion from **7.05%** (control) to **24.24%** (treatment), a **+17.19 percentage point** absolute lift. This outperforms cta_button and trial_length by a wide margin. Absolute lift (not relative %) is the right metric here: it tells stakeholders "17 more paying users per 100 treatment visitors", which maps directly to revenue.
+
+> **Statistical validity note:** With ~2,500 visitors per arm (based on 30% A/B participation across 50K visitors, split equally across 3 tests and 2 variants), this sample size is sufficient to detect a lift of this magnitude at p < 0.05 with >90% power. Before full deployment, confirm with a two-proportion z-test on the actual arm counts from `gold_ab_test_results` — the `sample_size_flag` column in that table will surface any underpowered segments automatically.
 
 ### 4. Desktop converts 3× better than mobile
 Desktop visitors convert at **8.31%** visit→paid. Mobile visitors — who represent the majority of traffic (55% of sessions) — convert at a significantly lower rate. The best performing combination is **referral × desktop** at **22.78%**. This gap signals a mobile experience problem: the trial activation flow or payment form is likely not optimised for small screens. A focused mobile UX sprint on the signup and checkout steps would unlock the largest untapped conversion opportunity.
@@ -96,6 +100,16 @@ Best A/B test:   pricing_test  →  +17.19 pp  (7.05% → 24.24%)
 Best device:     desktop       →   8.31% conversion
 Best combo:      referral × desktop  →  22.78% conversion
 ```
+
+---
+
+## Recommendations
+
+- **HealthMedia** — Mobile traffic dominates this partner's mix but converts poorly. Prioritise a mobile checkout audit: reduce form fields at signup, add Apple Pay / Google Pay as payment options, and A/B test a single-screen trial activation flow. A 3 pp mobile conversion lift on HealthMedia's volume would outperform any new channel acquisition spend.
+
+- **WellnessPress** — Email campaign is this partner's strongest channel (51.8% visit→signup, 12.2% overall). Double down: build a dedicated re-engagement sequence for visitors who signed up but never started a trial — that signup→trial gap (55%) is the next lever. Personalised "your trial is waiting" emails with a hard expiry should recover 5–8% of stalled signups.
+
+- **NutriDigital** — Paid social drives significant volume for this partner but at 2.65% overall conversion, it is the worst-performing spend. Either pause paid social and reallocate budget to referral incentives, or run a dedicated landing page test (separate from the shared pricing_test) to diagnose whether the drop happens at visit→signup (creative mismatch) or at trial→paid (price sensitivity).
 
 ---
 
@@ -144,7 +158,7 @@ python pipeline.py
 ## Repository Structure
 
 ```
-02_funnel_conversion/
+02-funnel-conversion/
 ├── pipeline.py               # Full Bronze → Silver → Gold pipeline
 ├── generate_funnel_data.py   # Synthetic dataset generator (50K visitors)
 ├── data/
